@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package dixa;
+
+service Calculator {
+    rpc GetPrimes (Request) returns (Response) {}
+}
+
+message Request {
+    int32 number = 1;
+}
+
+message Response {
+    repeated int32 numbers = 1;
+}

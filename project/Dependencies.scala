@@ -75,7 +75,8 @@ object Dependencies extends DependencyBuilders with LibraryManagementSyntax {
   private val other = Seq(
     "org.flywaydb" % "flyway-core" % "6.3.1",
     "com.beachape" %% "enumeratum-doobie" % "1.5.17",
-    "com.beachape" %% "enumeratum-circe" % "1.5.23"
+    "com.beachape" %% "enumeratum-circe" % "1.5.23",
+    "io.grpc" % "grpc-netty" % "1.33.1"
   )
 
   private val test = Seq(
@@ -89,4 +90,6 @@ object Dependencies extends DependencyBuilders with LibraryManagementSyntax {
   val proxy = cats ++ tapir ++ http4s ++ other ++ circe ++ log ++ test ++ fs2
 
   val calculator = cats ++ tapir ++ http4s ++ other ++ circe ++ log ++ test ++ fs2
+
+  val common = cats ++ tapir ++ http4s ++ other ++ circe ++ log ++ test ++ fs2
 }

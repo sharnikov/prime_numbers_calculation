@@ -1,6 +1,5 @@
 package com.test.dixa
 
-import cats.syntax.flatMap._
 import cats.effect.{ExitCode, IO, IOApp}
 import com.test.dixa.modules.{Http, Services}
 import io.chrisdavenport.log4cats.Logger
