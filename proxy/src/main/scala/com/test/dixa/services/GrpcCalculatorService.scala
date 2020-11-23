@@ -30,12 +30,10 @@ class GrpcCalculatorService[F[_]: ConcurrentEffect: ContextShift: Logger] privat
       .stream[F]
     val request = Request(goalNumber)
 
-    val metaData = new Metadata
-
     for {
       managedChannel <- channel
       client = CalculatorFs2Grpc.stub(managedChannel)
-      result = client.getPrimes(request, metaData).map(_.numbers)
+      result = client.getPrimes(request, new Metadata).map(_.numbers)
       streamResult <- FStream.evalSeq(result).covary[F]
     } yield streamResult
 

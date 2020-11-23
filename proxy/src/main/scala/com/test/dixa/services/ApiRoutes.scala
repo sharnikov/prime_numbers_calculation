@@ -15,15 +15,24 @@ import sttp.tapir._
 import sttp.tapir.json.circe._
 import sttp.tapir.server.http4s._
 
-
-class ApiRoutes[F[_]: Sync: ContextShift: Logger](calculationService: CalculationService[F]) {
+class ApiRoutes[F[_]: Sync: ContextShift: Logger](
+  calculationService: CalculationService[F]
+) {
 
   private val getPrimeStreamEndpoint =
     endpoint.get
-      .in("prime" / path[Int]("number")
-        .description("Number to limit prime response prime number stream")
-      )//.errorOut(defaultErrors)
-      .out(streamBody(Fs2Streams[F], schemaFor[String], CodecFormat.TextPlain(), Some(StandardCharsets.UTF_8)))
+      .in(
+        "prime" / path[Int]("number")
+          .description("Number to limit prime response prime number stream")
+      )
+      .out(
+        streamBody(
+          Fs2Streams[F],
+          schemaFor[String],
+          CodecFormat.TextPlain(),
+          Some(StandardCharsets.UTF_8)
+        )
+      )
       .out(statusCode(StatusCode.Ok))
 
   private val healthCheckEndpoint =
@@ -36,9 +45,11 @@ class ApiRoutes[F[_]: Sync: ContextShift: Logger](calculationService: Calculatio
     calculationService.getConvertedPrimeStream(_).pure[F].map(Right(_))
   )
 
-  private val healthCheckRoute = healthCheckEndpoint.toRoutes(_ => "It's fine".asRight[Unit].pure[F])
+  private val healthCheckRoute =
+    healthCheckEndpoint.toRoutes(_ => "It's fine".asRight[Unit].pure[F])
 
-  val endpoints = List(getPrimeStreamEndpoint, healthCheckEndpoint).map(_.tag("All routes"))
+  val endpoints =
+    List(getPrimeStreamEndpoint, healthCheckEndpoint).map(_.tag("All routes"))
 
   val routes: HttpRoutes[F] = getPrimeStreamRoute <+> healthCheckRoute
 

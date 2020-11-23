@@ -2,8 +2,6 @@
 
 <configuration scan="true">
 
-    <property name="zones_filename" value="${ZONES_FILE_NAME:-zones}"/>
-
     <appender name="stderr" class="ch.qos.logback.core.ConsoleAppender">
         <target>System.err</target>
         <encoder>
@@ -15,32 +13,7 @@
         <appender-ref ref="stderr"/>
     </appender>
 
-    <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${zones_filename}.csv</file>
-
-        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            <fileNamePattern>${zones_filename}.%i.csv</fileNamePattern>
-            <minIndex>1</minIndex>
-        </rollingPolicy>
-
-        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-            <maxFileSize>50 MB</maxFileSize>
-        </triggeringPolicy>
-
-        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
-            <evaluator class="ch.qos.logback.classic.boolex.OnMarkerEvaluator">
-                <marker>ZONES</marker>
-            </evaluator>
-            <OnMismatch>DENY</OnMismatch>
-        </filter>
-        <append>true</append>
-        <encoder>
-            <pattern>%msg%n</pattern>
-        </encoder>
-    </appender>
-
     <root level="info">
         <appender-ref ref="stderr_async"/>
-        <appender-ref ref="file"/>
     </root>
 </configuration>
