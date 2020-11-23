@@ -20,19 +20,26 @@ trait CalculationService[F[_]] {
 
 class GrpcCalculatorService[F[_]: ConcurrentEffect: ContextShift: Logger] private ()
     extends CalculationService[F] {
-  override def getPrimeStream(goalNumber: Int): FStream[F, Int] = {
 
+  private val streamClient = {
     import org.lyranthe.fs2_grpc.java_runtime.implicits._
 
     val channel = ManagedChannelBuilder
       .forAddress("localhost", 9999)
       .usePlaintext()
       .stream[F]
-    val request = Request(goalNumber)
 
     for {
       managedChannel <- channel
-      client = CalculatorFs2Grpc.stub(managedChannel)
+    } yield CalculatorFs2Grpc.stub(managedChannel)
+  }
+
+  override def getPrimeStream(goalNumber: Int): FStream[F, Int] = {
+
+    val request = Request(goalNumber)
+
+    for {
+      client <- streamClient
       result = client.getPrimes(request, new Metadata).map(_.numbers)
       streamResult <- FStream.evalSeq(result).covary[F]
     } yield streamResult
