@@ -14,6 +14,7 @@ object Dependencies extends DependencyBuilders with LibraryManagementSyntax {
     val log4cats   = "1.1.1"
     val fs2        = "2.4.4"
     val scalaTest  = "3.2.3"
+    val pureconfig = "0.14.0"
   }
 
   private def log4CatsLib(artifact: String): ModuleID  = "io.chrisdavenport"           %% artifact % Versions.log4cats
@@ -69,7 +70,10 @@ object Dependencies extends DependencyBuilders with LibraryManagementSyntax {
   )
 
   private val other = Seq(
-    "io.grpc" % "grpc-netty" % "1.33.1"
+    "io.grpc"                % "grpc-netty"             % "1.33.1",
+    "com.github.pureconfig" %% "pureconfig"             % Versions.pureconfig,
+    "com.github.pureconfig" %% "pureconfig-cats"        % Versions.pureconfig,
+    "com.github.pureconfig" %% "pureconfig-cats-effect" % Versions.pureconfig
   )
 
   private val test = Seq(
