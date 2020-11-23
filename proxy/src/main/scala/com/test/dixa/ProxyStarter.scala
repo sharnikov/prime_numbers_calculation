@@ -17,14 +17,14 @@ object ProxyStarter extends IOApp {
   override def run(args: List[String]): IO[ExitCode] =
     Logger[IO].info("Calculator service started to load") *>
       (for {
-    services <- Services.build[IO]()
-    http <- Http.build[IO](services)
-    _ <- BlazeServerBuilder[IO](ec)
-      .bindHttp(8080, "localhost")
-      .withHttpApp(http.routes)
-      .serve
-      .compile
-      .drain
-  } yield ExitCode.Success)
+        services <- Services.build[IO]()
+        http <- Http.build[IO](services)
+        _ <- BlazeServerBuilder[IO](ec)
+          .bindHttp(8083, "localhost")
+          .withHttpApp(http.routes)
+          .serve
+          .compile
+          .drain
+      } yield ExitCode.Success)
 
 }

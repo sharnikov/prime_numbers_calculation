@@ -1,14 +1,11 @@
 package com.test.dixa.services
 
 import cats.syntax.functor._
-import cats.effect.{ConcurrentEffect, ContextShift, IO, Sync}
-import dixa.primes.{CalculatorFs2Grpc, CalculatorGrpc, Request}
+import cats.effect.{ConcurrentEffect, ContextShift, Sync}
+import dixa.primes.{CalculatorFs2Grpc, Request}
 import fs2.{Chunk, Stream => FStream}
 import io.chrisdavenport.log4cats.Logger
 import io.grpc.{ManagedChannelBuilder, Metadata}
-
-import scala.concurrent.Await
-import scala.concurrent.duration.Duration
 
 object GrpcCalculatorService {
   def build[F[_]: ConcurrentEffect: ContextShift: Logger]: F[GrpcCalculatorService[F]] =
@@ -27,7 +24,8 @@ class GrpcCalculatorService[F[_]: ConcurrentEffect: ContextShift: Logger] privat
 
     val channel = ManagedChannelBuilder
       .forAddress("localhost", 9999)
-      .usePlaintext().stream[F]
+      .usePlaintext()
+      .stream[F]
     val request = Request(10)
 
     val metaData = new Metadata
@@ -40,8 +38,6 @@ class GrpcCalculatorService[F[_]: ConcurrentEffect: ContextShift: Logger] privat
     } yield streamResult
 
   }
-
-
 
   override def getConvertedPrimeStream(goalNumber: Int): FStream[F, Byte] =
     getPrimeStream(goalNumber)

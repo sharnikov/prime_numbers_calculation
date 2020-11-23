@@ -1,14 +1,16 @@
 package com.test.dixa
 
+import cats.Applicative
 import dixa.primes.CalculatorGrpc.Calculator
-import dixa.primes.{Request, Response}
+import dixa.primes.{CalculatorFs2Grpc, Request, Response}
+import fs2.{Chunk, Stream => FStream}
+import cats.syntax.applicative._
 
-import scala.concurrent.Future
+class CalculationService[F[_]: Applicative, A] extends CalculatorFs2Grpc[F, A] {
 
-
-class CalculationService extends Calculator {
-  override def getPrimes(request: Request): Future[Response] = {
-    println(s"Got ${request.number}")
-    Future.successful(Response(Seq(1,2,3,4,5,6,6,7,8,8,9)))
+  override def getPrimes(request: Request, ctx: A): F[Response] = {
+    println("Got me")
+    Response(Seq(1, 2, 3, 4, 5, 6, 6, 229)).pure[F]
   }
+
 }
