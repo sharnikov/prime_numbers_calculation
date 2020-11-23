@@ -22,7 +22,6 @@ object CalcStarter extends IOApp {
   val calculatorService =
     CalculatorFs2Grpc.bindService(new CalculationService[IO, Metadata]())
 
-//    .addService(ProtoReflectionService.newInstance())
   override def run(args: List[String]): IO[ExitCode] =
     NettyServerBuilder
       .forPort(9999)
@@ -34,6 +33,5 @@ object CalcStarter extends IOApp {
       .compile
       .drain
       .map(_ => ExitCode.Success)
-//      .evalMap(_ => IO.never).pure[IO].flatMap(_ => IO.never)
 
 }
