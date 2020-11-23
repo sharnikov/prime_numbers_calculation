@@ -1,6 +1,6 @@
 package com.test.dixa
 
-import cats.effect.{ExitCode, IO, IOApp}
+import cats.effect.{ ExitCode, IO, IOApp }
 import com.test.dixa.modules.Services
 import org.lyranthe.fs2_grpc.java_runtime.implicits._
 import dixa.primes.CalculatorFs2Grpc
