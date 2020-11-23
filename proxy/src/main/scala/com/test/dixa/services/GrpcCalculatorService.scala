@@ -1,5 +1,6 @@
 package com.test.dixa.services
 
+import cats.syntax.functor._
 import cats.effect.{ConcurrentEffect, ContextShift, Sync}
 import dixa.primes.{CalculatorFs2Grpc, Request}
 import fs2.{Chunk, Stream => FStream}

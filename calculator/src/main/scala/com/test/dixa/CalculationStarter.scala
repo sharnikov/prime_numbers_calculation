@@ -1,15 +1,11 @@
 package com.test.dixa
 
-import cats.syntax.flatMap._
-import cats.syntax.functor._
 import cats.effect.{ExitCode, IO, IOApp}
 import com.test.dixa.modules.Services
 import org.lyranthe.fs2_grpc.java_runtime.implicits._
-import dixa.primes.{CalculatorFs2Grpc, CalculatorGrpc}
+import dixa.primes.CalculatorFs2Grpc
 import io.grpc.netty.NettyServerBuilder
-import io.grpc.{Metadata, Server, ServerBuilder, ServerServiceDefinition}
-import fs2.{Chunk, Stream => FStream}
-import io.chrisdavenport.log4cats.Logger
+import io.grpc.Metadata
 import io.chrisdavenport.log4cats.slf4j.Slf4jLogger
 
 object CalculationStarter extends IOApp {
