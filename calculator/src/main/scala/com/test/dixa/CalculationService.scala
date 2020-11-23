@@ -1,18 +1,23 @@
 package com.test.dixa
 
-import cats.Applicative
-import dixa.primes.CalculatorGrpc.Calculator
+import cats.{FlatMap}
+import cats.effect.Sync
 import dixa.primes.{CalculatorFs2Grpc, Request, Response}
-import fs2.{Chunk, Stream => FStream}
-import cats.syntax.applicative._
+import cats.syntax.functor._
+import com.test.dixa.calculation.PrimeCalculator
 
-class CalculationService[F[_]: Applicative, A] extends CalculatorFs2Grpc[F, A] {
+object CalculationService {
+  def build[F[_]: Sync, A](
+    primeCalculator: PrimeCalculator[F]
+  ): F[CalculationService[F, A]] =
+    Sync[F].delay(new CalculationService[F, A](primeCalculator))
+}
 
-  private val streamWithPrimes = LazyList.empty[Int]
+class CalculationService[F[_]: FlatMap, A] private (
+  primeCalculator: PrimeCalculator[F]
+) extends CalculatorFs2Grpc[F, A] {
 
-  override def getPrimes(request: Request, ctx: A): F[Response] = {
-    println("Got me")
-    Response(Seq(1, 2, 3, 4, 5, 6, 6, 229)).pure[F]
-  }
+  override def getPrimes(request: Request, ctx: A): F[Response] =
+    primeCalculator.getPrimes(request.number).map(Response(_))
 
 }

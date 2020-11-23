@@ -1,12 +1,22 @@
 package com.test.dixa.calculation
 
-class BrutePrimeCalculator extends PrimeCalculator {
+import cats.effect.Sync
 
-  val primesStream = 2 #:: getNextPrime(3)
+object BrutePrimeCalculator {
+  def build[F[_]: Sync]: F[PrimeCalculator[F]] =
+    Sync[F].delay(new BrutePrimeCalculator[F])
+}
 
-  def getPrimes(border: Int): List[Int] = {
-    primesStream.takeWhile(_ <= border).toList
-  }
+class BrutePrimeCalculator[F[_]: Sync] private () extends PrimeCalculator[F] {
+
+  private val primesStream = 2 #:: getNextPrime(3)
+
+  def getPrimes(border: Int): F[List[Int]] =
+    Sync[F].delay {
+      val result = primesStream.takeWhile(_ <= border).toList
+      println(s"Calculated $result")
+      result
+    }
 
   private def getNextPrime(current: Int): LazyList[Int] = {
     if (isPrime(current)) {

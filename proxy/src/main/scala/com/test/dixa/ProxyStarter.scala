@@ -15,7 +15,7 @@ object ProxyStarter extends IOApp {
   val ec: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
 
   override def run(args: List[String]): IO[ExitCode] =
-    Logger[IO].info("Calculator service started to load") *>
+    logger.info("Proxy service started to load") *>
       (for {
         services <- Services.build[IO]()
         http <- Http.build[IO](services)

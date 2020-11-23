@@ -1,18 +1,28 @@
 package com.test.dixa.calculation
 
+import cats.Applicative
+import cats.effect.Sync
+import cats.syntax.applicative._
+
 import scala.collection.mutable
 
-class CleverUnsafePrimeCalculator extends PrimeCalculator {
+object CleverUnsafePrimeCalculator {
+  def build[F[_]: Sync]: F[CleverUnsafePrimeCalculator[F]] =
+    Sync[F].delay(new CleverUnsafePrimeCalculator[F])
+}
+
+class CleverUnsafePrimeCalculator[F[_]: Applicative] private ()
+    extends PrimeCalculator[F] {
 
   private var currentLast = 1
   private var currentPrimes = List(1)
 
-  override def getPrimes(border: Int): List[Int] = {
+  override def getPrimes(border: Int): F[List[Int]] = {
     if (currentLast < border) {
       addMore(border: Int)
     }
 
-    currentPrimes.takeWhile(_ <= border)
+    currentPrimes.takeWhile(_ <= border).pure[F]
   }
 
   def addMore(border: Int): List[Int] = {

@@ -8,7 +8,8 @@ import io.chrisdavenport.log4cats.Logger
 import io.grpc.{ManagedChannelBuilder, Metadata}
 
 object GrpcCalculatorService {
-  def build[F[_]: ConcurrentEffect: ContextShift: Logger]: F[GrpcCalculatorService[F]] =
+  def build[F[_]: ConcurrentEffect: ContextShift: Logger]
+    : F[GrpcCalculatorService[F]] =
     Sync[F].delay(new GrpcCalculatorService[F])
 }
 
@@ -17,7 +18,8 @@ trait CalculationService[F[_]] {
   def getConvertedPrimeStream(goalNumber: Int): FStream[F, Byte]
 }
 
-class GrpcCalculatorService[F[_]: ConcurrentEffect: ContextShift: Logger] private() extends CalculationService[F] {
+class GrpcCalculatorService[F[_]: ConcurrentEffect: ContextShift: Logger] private ()
+    extends CalculationService[F] {
   override def getPrimeStream(goalNumber: Int): FStream[F, Int] = {
 
     import org.lyranthe.fs2_grpc.java_runtime.implicits._
@@ -26,7 +28,7 @@ class GrpcCalculatorService[F[_]: ConcurrentEffect: ContextShift: Logger] privat
       .forAddress("localhost", 9999)
       .usePlaintext()
       .stream[F]
-    val request = Request(10)
+    val request = Request(goalNumber)
 
     val metaData = new Metadata
 
@@ -46,4 +48,3 @@ class GrpcCalculatorService[F[_]: ConcurrentEffect: ContextShift: Logger] privat
       .flatMap(chars => FStream.chunk(Chunk.seq(chars)))
       .map(_.toByte)
 }
-

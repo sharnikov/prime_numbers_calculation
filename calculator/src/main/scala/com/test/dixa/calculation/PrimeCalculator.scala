@@ -1,5 +1,5 @@
 package com.test.dixa.calculation
 
-trait PrimeCalculator {
-  def getPrimes(border: Int): List[Int]
+trait PrimeCalculator[F[_]] {
+  def getPrimes(border: Int): F[List[Int]]
 }
