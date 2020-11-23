@@ -2,11 +2,8 @@ package com.test.dixa
 
 import cats.effect.{ExitCode, IO, IOApp}
 import com.test.dixa.modules.{AppResources, Http, Services}
-import io.chrisdavenport.log4cats.Logger
 import io.chrisdavenport.log4cats.slf4j.Slf4jLogger
 import org.http4s.server.blaze.BlazeServerBuilder
-
-import scala.concurrent.ExecutionContext
 
 object ProxyStarter extends IOApp {
 
