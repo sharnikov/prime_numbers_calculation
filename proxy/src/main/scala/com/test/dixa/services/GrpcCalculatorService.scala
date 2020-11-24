@@ -33,7 +33,6 @@ class GrpcCalculatorService[F[_]: ConcurrentEffect: ContextShift: Logger: Timer]
       .usePlaintext()
       .stream[F]
 
-    val request = Request(2)
     for {
       managedChannel <- channel
     } yield CalculatorFs2Grpc.stub(managedChannel)
