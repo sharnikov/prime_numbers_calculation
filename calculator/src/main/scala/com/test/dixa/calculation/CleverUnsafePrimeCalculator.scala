@@ -11,15 +11,14 @@ object CleverUnsafePrimeCalculator {
     Sync[F].delay(new CleverUnsafePrimeCalculator[F])
 }
 
-class CleverUnsafePrimeCalculator[F[_]: Applicative] private ()
-    extends PrimeCalculator[F] {
+class CleverUnsafePrimeCalculator[F[_]: Applicative] private () extends PrimeCalculator[F] {
 
-  private var currentLast = 1
+  private var currentLast   = 1
   private var currentPrimes = List(1)
 
   override def getPrimes(border: Int): F[List[Int]] = {
     if (currentLast < border) {
-      addMore(border: Int)
+      currentPrimes = addMore(border: Int)
     }
 
     currentPrimes.takeWhile(_ <= border).pure[F]
@@ -36,6 +35,6 @@ class CleverUnsafePrimeCalculator[F[_]: Applicative] private ()
       }
     }
 
-    primes.zipWithIndex.filter(_._1).map(_._2).toList
+    primes.zipWithIndex.filter(_._1).map(_._2).drop(2).toList
   }
 }
