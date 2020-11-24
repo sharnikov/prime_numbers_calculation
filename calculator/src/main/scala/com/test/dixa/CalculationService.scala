@@ -23,6 +23,6 @@ class CalculationService[F[_]: Concurrent: Timer, A] private (
   override def getPrimes(request: Request, ctx: A): FStream[F, Response] =
     primeCalculator
       .getPrimes(request.number)
-      .groupWithin(500, FiniteDuration(1, TimeUnit.MILLISECONDS))
+      .groupWithin(100, FiniteDuration(500, TimeUnit.MILLISECONDS))
       .map(chunk => Response(chunk.toList))
 }
