@@ -58,7 +58,7 @@ class GrpcCalculatorService[F[_]: ConcurrentEffect: ContextShift: Logger: Timer]
       case Right(response) => FStream.emits(response.numbers)
       case Left(exception) if timesToRetry > 0 =>
         FStream
-          .emit(1)
+          .emit(())
           .evalTap { _ =>
             Logger[F].error(
               s"Prime calculation failed with ${exception.getMessage}. $timesToRetry retries left."
@@ -68,7 +68,7 @@ class GrpcCalculatorService[F[_]: ConcurrentEffect: ContextShift: Logger: Timer]
           .flatMap(_ => tryToRequest(client, request, timesToRetry - 1, timeToWait * 2))
       case Left(exception) =>
         FStream
-          .emit(1)
+          .emit(())
           .evalTap { _ =>
             Logger[F].error(
               s"Prime calculation failed with ${exception.getMessage}."
