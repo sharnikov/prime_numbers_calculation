@@ -1,5 +1,6 @@
 package com.test.dixa.services
 
+import cats.syntax.applicative._
 import cats.syntax.functor._
 import cats.effect.{ ConcurrentEffect, ContextShift, Sync }
 import com.test.dixa.config.Config
@@ -31,16 +32,20 @@ class GrpcCalculatorService[F[_]: ConcurrentEffect: ContextShift: Logger] privat
 
     for {
       managedChannel <- channel
-    } yield CalculatorFs2Grpc.stub(managedChannel)
+    } yield
+//      val a: FStream[F, Int] = CalculatorFs2Grpc.stub(managedChannel)
+//        .getPrimes(Request(1), new Metadata)
+//        .flatMap(response => FStream.emits(response.numbers))
+    CalculatorFs2Grpc.stub(managedChannel)
   }
 
   override def getPrimeStream(goalNumber: Int): FStream[F, Int] =
     for {
       client <- streamClient
-      request  = Request(goalNumber)
-      response = client.getPrimes(request, new Metadata).map(_.numbers)
-      streamResult <- FStream.evalSeq(response).covary[F]
-    } yield streamResult
+      request = Request(goalNumber)
+      response <- client.getPrimes(request, new Metadata)
+      result   <- FStream.emits(response.numbers)
+    } yield result
 
   override def getConvertedPrimeStream(goalNumber: Int): FStream[F, Byte] =
     getPrimeStream(goalNumber)

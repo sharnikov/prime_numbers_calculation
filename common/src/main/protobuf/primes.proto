@@ -3,7 +3,7 @@ syntax = "proto3";
 package dixa;
 
 service Calculator {
-    rpc GetPrimes (Request) returns (Response) {}
+    rpc GetPrimes (Request) returns (stream Response) {}
 }
 
 message Request {

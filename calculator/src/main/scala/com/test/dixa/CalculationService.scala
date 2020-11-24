@@ -1,23 +1,28 @@
 package com.test.dixa
 
-import cats.{FlatMap}
-import cats.effect.Sync
-import dixa.primes.{CalculatorFs2Grpc, Request, Response}
-import cats.syntax.functor._
+import java.util.concurrent.TimeUnit
+
+import cats.effect.{ Concurrent, Sync, Timer }
+import dixa.primes.{ CalculatorFs2Grpc, Request, Response }
 import com.test.dixa.calculation.PrimeCalculator
+import fs2.{ Stream => FStream }
+
+import scala.concurrent.duration.FiniteDuration
 
 object CalculationService {
-  def build[F[_]: Sync, A](
-    primeCalculator: PrimeCalculator[F]
+  def build[F[_]: Concurrent: Timer, A](
+      primeCalculator: PrimeCalculator[F]
   ): F[CalculationService[F, A]] =
     Sync[F].delay(new CalculationService[F, A](primeCalculator))
 }
 
-class CalculationService[F[_]: FlatMap, A] private (
-  primeCalculator: PrimeCalculator[F]
+class CalculationService[F[_]: Concurrent: Timer, A] private (
+    primeCalculator: PrimeCalculator[F]
 ) extends CalculatorFs2Grpc[F, A] {
 
-  override def getPrimes(request: Request, ctx: A): F[Response] =
-    primeCalculator.getPrimes(request.number).map(Response(_))
-
+  override def getPrimes(request: Request, ctx: A): FStream[F, Response] =
+    primeCalculator
+      .getPrimes(request.number)
+      .groupWithin(500, FiniteDuration(1, TimeUnit.MILLISECONDS))
+      .map(chunk => Response(chunk.toList))
 }

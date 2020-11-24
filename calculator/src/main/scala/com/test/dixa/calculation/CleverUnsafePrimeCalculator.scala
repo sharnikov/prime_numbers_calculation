@@ -2,7 +2,7 @@ package com.test.dixa.calculation
 
 import cats.Applicative
 import cats.effect.Sync
-import cats.syntax.applicative._
+import fs2.{ Stream => FStream }
 
 import scala.collection.mutable
 
@@ -16,15 +16,15 @@ class CleverUnsafePrimeCalculator[F[_]: Applicative] private () extends PrimeCal
   private var currentLast   = 2
   private var currentPrimes = List(2)
 
-  override def getPrimes(border: Int): F[List[Int]] =
-    if (border <= 1) List.empty[Int].pure[F]
+  override def getPrimes(border: Int): FStream[F, Int] =
+    if (border <= 1) FStream.emits(List.empty[Int]).covary[F]
     else {
       if (currentLast < border) {
         currentPrimes ++= addMore(currentLast, border)
         currentLast = border
-        currentPrimes.pure[F]
+        FStream.emits(currentPrimes).covary[F]
       } else {
-        currentPrimes.takeWhile(_ <= border).pure[F]
+        FStream.emits(currentPrimes.takeWhile(_ <= border)).covary[F]
       }
 
     }

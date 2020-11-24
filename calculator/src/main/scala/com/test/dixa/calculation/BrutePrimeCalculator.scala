@@ -1,6 +1,7 @@
 package com.test.dixa.calculation
 
 import cats.effect.Sync
+import fs2.{ Stream => FStream }
 
 object BrutePrimeCalculator {
   def build[F[_]: Sync]: F[PrimeCalculator[F]] =
@@ -9,18 +10,14 @@ object BrutePrimeCalculator {
 
 class BrutePrimeCalculator[F[_]: Sync] private () extends PrimeCalculator[F] {
 
-  private val primesStream = 2 #:: getNextPrime(3)
+  private val fsPrimesStream = FStream.emit(2) ++ getNextPrime(3)
 
-  def getPrimes(border: Int): F[List[Int]] =
-    Sync[F].delay {
-      val result = primesStream.takeWhile(_ <= border).toList
-      println(s"Calculated $result")
-      result
-    }
+  def getPrimes(border: Int): FStream[F, Int] =
+    fsPrimesStream.takeWhile(_ <= border)
 
-  private def getNextPrime(current: Int): LazyList[Int] =
+  private def getNextPrime(current: Int): FStream[F, Int] =
     if (isPrime(current)) {
-      current #:: getNextPrime(current + 1)
+      FStream.emit(current) ++ getNextPrime(current + 1)
     } else {
       getNextPrime(current + 1)
     }
