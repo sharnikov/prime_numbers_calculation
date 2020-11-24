@@ -40,9 +40,6 @@ class CleverUnsafePrimeCalculator[F[_]: Applicative] private () extends PrimeCal
       }
     }
 
-    primes.zipWithIndex
-      .dropWhile { case (_, index) => index <= currentLast }
-      .collect { case (isPrime, value) if isPrime => value }
-      .toList
+    primes.zipWithIndex.collect { case (isPrime, value) if isPrime && value > currentLast => value }.toList
   }
 }
