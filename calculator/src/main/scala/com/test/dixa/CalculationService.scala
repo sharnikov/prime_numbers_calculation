@@ -1,13 +1,11 @@
 package com.test.dixa
 
-import java.util.concurrent.TimeUnit
-
 import cats.effect.{ Concurrent, Sync, Timer }
 import dixa.primes.{ CalculatorFs2Grpc, Request, Response }
 import com.test.dixa.calculation.PrimeCalculator
 import fs2.{ Stream => FStream }
 
-import scala.concurrent.duration.FiniteDuration
+import scala.concurrent.duration._
 
 object CalculationService {
   def build[F[_]: Concurrent: Timer, A](
@@ -23,6 +21,6 @@ class CalculationService[F[_]: Concurrent: Timer, A] private (
   override def getPrimes(request: Request, ctx: A): FStream[F, Response] =
     primeCalculator
       .getPrimes(request.number)
-      .groupWithin(100, FiniteDuration(500, TimeUnit.MILLISECONDS))
+      .groupWithin(100, 500.seconds)
       .map(chunk => Response(chunk.toList))
 }
