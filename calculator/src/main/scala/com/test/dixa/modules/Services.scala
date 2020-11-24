@@ -5,10 +5,9 @@ import cats.syntax.flatMap._
 import cats.effect.{ Concurrent, Timer }
 import com.test.dixa.CalculationService
 import com.test.dixa.calculation.{ BrutePrimeCalculator, PrimeCalculator }
-import io.chrisdavenport.log4cats.Logger
 
 object Services {
-  def build[F[_]: Concurrent: Logger: Timer, A](): F[Services[F, A]] =
+  def build[F[_]: Concurrent: Timer, A](): F[Services[F, A]] =
     for {
       brutePrimeCalculator <- BrutePrimeCalculator.build[F]
       calculationService   <- CalculationService.build[F, A](brutePrimeCalculator)

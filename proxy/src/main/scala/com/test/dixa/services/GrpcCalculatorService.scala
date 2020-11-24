@@ -43,14 +43,14 @@ class GrpcCalculatorService[F[_]: ConcurrentEffect: ContextShift: Logger: Timer]
     for {
       client <- streamClient
       request = Request(goalNumber)
-      result <- tryToRequest(client, request, 3, 2)
+      result <- tryToRequest(client, request, config.circuitBreaker.retryTimes, config.circuitBreaker.initialRetryDelay)
     } yield result
 
   private def tryToRequest(
       client: CalculatorFs2Grpc[F, Metadata],
       request: Request,
       timesToRetry: Int,
-      timeToWait: Long
+      timeToWait: FiniteDuration
   ): FStream[F, Int] =
     client.getPrimes(request, new Metadata()).attempt.flatMap {
       case Right(response) => FStream.emits(response.numbers)
@@ -71,7 +71,7 @@ class GrpcCalculatorService[F[_]: ConcurrentEffect: ContextShift: Logger: Timer]
               s"Prime calculation failed with ${exception.getMessage}. $timesToRetry retries left."
             )
           }
-          .flatMap(_ => FStream.sleep[F](timeToWait.seconds))
+          .flatMap(_ => FStream.sleep[F](timeToWait))
           .flatMap(_ => tryToRequest(client, request, timesToRetry - 1, timeToWait * 2))
       case Left(exception) =>
         FStream
