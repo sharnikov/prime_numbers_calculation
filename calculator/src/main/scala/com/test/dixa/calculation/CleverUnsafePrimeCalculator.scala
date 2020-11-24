@@ -35,6 +35,6 @@ class CleverUnsafePrimeCalculator[F[_]: Applicative] private () extends PrimeCal
       }
     }
 
-    primes.zipWithIndex.filter(_._1).map(_._2).drop(2).toList
+    primes.zipWithIndex.drop(2).collect { case (isPrime, value) if isPrime => value }.toList
   }
 }
