@@ -18,16 +18,14 @@ class BrutePrimeCalculator[F[_]: Sync] private () extends PrimeCalculator[F] {
       result
     }
 
-  private def getNextPrime(current: Int): LazyList[Int] = {
+  private def getNextPrime(current: Int): LazyList[Int] =
     if (isPrime(current)) {
       current #:: getNextPrime(current + 1)
     } else {
       getNextPrime(current + 1)
     }
-  }
 
-  private def isPrime(number: Int): Boolean = {
-    (2 until number).forall(element => number % element != 0)
-  }
+  private def isPrime(number: Int): Boolean =
+    (2 until number / 2 + 1).forall(element => number % element != 0)
 
 }
