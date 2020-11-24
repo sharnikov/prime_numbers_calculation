@@ -26,6 +26,7 @@ class ApiRoutes[F[_]: Sync: ContextShift: Logger](
     endpoint.get
       .in(
         "prime" / path[Int]("number")
+          .validate(Validator.min(2))
           .description("Number to limit prime response prime number stream")
       )
       .errorOut(defaultErrors)
