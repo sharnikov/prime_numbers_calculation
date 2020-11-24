@@ -23,5 +23,4 @@ class CalculationService[F[_]: Concurrent: Timer, A] private (
       .getPrimes(request.number)
       .groupWithin(100, 500.seconds)
       .map(chunk => Response(chunk.toList))
-      .map(_ => throw new Exception("Fuck you"))
 }
