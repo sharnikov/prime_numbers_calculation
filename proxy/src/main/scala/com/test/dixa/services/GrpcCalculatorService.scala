@@ -1,13 +1,11 @@
 package com.test.dixa.services
 
-import java.rmi.ServerException
-import java.util.concurrent.TimeUnit
-
 import cats.syntax.applicative._
 import cats.syntax.functor._
 import cats.effect.{ ConcurrentEffect, ContextShift, Sync, Timer }
 import com.test.dixa.config.Config
-import dixa.primes.{ CalculatorFs2Grpc, Request, Response }
+import com.test.dixa.errors.Errors.{ CalculationFailedException, ExternalServerUnavailableException }
+import dixa.primes.{ CalculatorFs2Grpc, Request }
 import fs2.{ Chunk, Stream => FStream }
 import io.chrisdavenport.log4cats.Logger
 import io.grpc.{ ManagedChannelBuilder, Metadata, Status, StatusRuntimeException }
@@ -64,7 +62,7 @@ class GrpcCalculatorService[F[_]: ConcurrentEffect: ContextShift: Logger: Timer]
               s"Calculation service it temporary unavailable. Exception message: ${exception.getMessage}."
             )
           }
-          .flatMap(_ => FStream.raiseError(new ServerException("Underling service is unavailable")))
+          .flatMap(_ => FStream.raiseError(ExternalServerUnavailableException("Underling service is unavailable")))
       case Left(exception) if timesToRetry > 0 =>
         FStream
           .emit(())
@@ -83,7 +81,7 @@ class GrpcCalculatorService[F[_]: ConcurrentEffect: ContextShift: Logger: Timer]
               s"Prime calculation failed with ${exception.getMessage}."
             )
           }
-          .flatMap(_ => FStream.raiseError(new ServerException("Underling service has failed the request")))
+          .flatMap(_ => FStream.raiseError(CalculationFailedException("Underling service has failed the request")))
     }
 
   override def getConvertedPrimeStream(goalNumber: Int): FStream[F, Byte] =
