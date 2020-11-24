@@ -2,7 +2,8 @@ lazy val root = (project in file("."))
   .settings(
     name := "dixa-test-task",
     scalaVersion := "2.13.4"
-  ).enablePlugins(Fs2Grpc)
+  )
+  .enablePlugins(Fs2Grpc)
   .dependsOn(calculator, proxy)
   .aggregate(calculator, proxy)
 
@@ -12,7 +13,8 @@ lazy val proxy = (project in file("proxy"))
     scalaVersion := "2.13.4",
     libraryDependencies ++= Dependencies.proxy,
     commonCompileSettings
-  ).enablePlugins(Fs2Grpc)
+  )
+  .enablePlugins(Fs2Grpc)
   .dependsOn(common)
 
 lazy val calculator = (project in file("calculator"))
@@ -20,17 +22,18 @@ lazy val calculator = (project in file("calculator"))
     name := "calculator",
     scalaVersion := "2.13.4",
     libraryDependencies ++= Dependencies.calculator,
-    commonCompileSettings,
-  ).enablePlugins(Fs2Grpc)
+    commonCompileSettings
+  )
+  .enablePlugins(Fs2Grpc)
   .dependsOn(common)
 
 lazy val common = (project in file("common"))
   .settings(
     name := "common",
     scalaVersion := "2.13.4",
-    libraryDependencies ++= Dependencies.common,
     commonCompileSettings
-  ).enablePlugins(Fs2Grpc)
+  )
+  .enablePlugins(Fs2Grpc)
 
 lazy val commonCompileSettings = Seq(
   scalacOptions := Seq(

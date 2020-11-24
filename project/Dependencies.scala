@@ -79,6 +79,4 @@ object Dependencies extends DependencyBuilders with LibraryManagementSyntax {
   val proxy = cats ++ tapir ++ http4s ++ other ++ log ++ test ++ fs2 ++ pureConfig
 
   val calculator = cats ++ other ++ log ++ test ++ fs2 ++ pureConfig
-
-  val common = cats ++ tapir ++ http4s ++ log ++ test
 }

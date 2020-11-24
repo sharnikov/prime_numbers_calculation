@@ -15,8 +15,10 @@ object ProxyStarter extends IOApp {
       AppResources.build[IO]().use { resources =>
         for {
           config   <- Config.parseConfig[IO](resources.configBlocker)
+          _        <- logger.info("Config is ready")
           services <- Services.build[IO](config)
           http     <- Http.build[IO](services)
+          _        <- logger.info("Modules are built")
           _ <- BlazeServerBuilder[IO](resources.serverPool)
             .bindHttp(config.server.port, config.server.host)
             .withHttpApp(http.routes)
@@ -25,5 +27,4 @@ object ProxyStarter extends IOApp {
             .drain
         } yield ExitCode.Success
       }
-
 }
