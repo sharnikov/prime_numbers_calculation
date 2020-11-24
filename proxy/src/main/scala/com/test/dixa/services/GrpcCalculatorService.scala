@@ -10,7 +10,7 @@ import com.test.dixa.config.Config
 import dixa.primes.{ CalculatorFs2Grpc, Request, Response }
 import fs2.{ Chunk, Stream => FStream }
 import io.chrisdavenport.log4cats.Logger
-import io.grpc.{ ManagedChannelBuilder, Metadata }
+import io.grpc.{ ManagedChannelBuilder, Metadata, Status, StatusRuntimeException }
 
 import scala.concurrent.duration._
 
@@ -56,6 +56,15 @@ class GrpcCalculatorService[F[_]: ConcurrentEffect: ContextShift: Logger: Timer]
   ): FStream[F, Int] =
     client.getPrimes(request, new Metadata()).attempt.flatMap {
       case Right(response) => FStream.emits(response.numbers)
+      case Left(exception: StatusRuntimeException) if Status.UNAVAILABLE.getCode == exception.getStatus.getCode =>
+        FStream
+          .emit(())
+          .evalTap { _ =>
+            Logger[F].error(
+              s"Calculation service it temporary unavailable. Exception message: ${exception.getMessage}."
+            )
+          }
+          .flatMap(_ => FStream.raiseError(new ServerException("Underling service is unavailable")))
       case Left(exception) if timesToRetry > 0 =>
         FStream
           .emit(())
@@ -74,7 +83,7 @@ class GrpcCalculatorService[F[_]: ConcurrentEffect: ContextShift: Logger: Timer]
               s"Prime calculation failed with ${exception.getMessage}."
             )
           }
-          .flatMap(_ => FStream.raiseError(new ServerException("Underling service is unavailable")))
+          .flatMap(_ => FStream.raiseError(new ServerException("Underling service has failed the request")))
     }
 
   override def getConvertedPrimeStream(goalNumber: Int): FStream[F, Byte] =
