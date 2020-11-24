@@ -32,11 +32,7 @@ class GrpcCalculatorService[F[_]: ConcurrentEffect: ContextShift: Logger] privat
 
     for {
       managedChannel <- channel
-    } yield
-//      val a: FStream[F, Int] = CalculatorFs2Grpc.stub(managedChannel)
-//        .getPrimes(Request(1), new Metadata)
-//        .flatMap(response => FStream.emits(response.numbers))
-    CalculatorFs2Grpc.stub(managedChannel)
+    } yield CalculatorFs2Grpc.stub(managedChannel)
   }
 
   override def getPrimeStream(goalNumber: Int): FStream[F, Int] =
