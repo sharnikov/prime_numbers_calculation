@@ -27,18 +27,18 @@ It doesn't retry if the second app is down, because IMHO there is not too much s
 Moreover, there is no any infrastructural stuff like database or a queue, so I decided to stop it there and to write README after all.
 4. The second app has a pretty simple prime calculation algorithm. From the beginning I wanted to write more optimal algorithm, but then decided the current one is enough(you can find the draw in commits history if you want). 
 It has a lazy stream, and it saves the previous results. In case of a restart of the application we lose all the calculations, but to do a database to save the data on disk here is IMHO overkill.
-5. Unit tests were added to services to cover the most venerable parts of code.          
+5. Unit tests were added to services to cover the most vulnerable parts of code.          
 
-##Things which could be added
+##Points to improve
 1. Better swagger descriptions
-2. Rate limits on the "Proxy" to prevent possible "DDoS"
-3. Clever caching in the "Calculator" not to lose all the data in case of restart. Any in memory database to have fast access to all the calculations.
-4. Better circuit breaker
-5. Dockerisation and kubernetesation
-6. A lot of small details
-7. Tracing. For example: Zipkin
-8. Integration testing. For example with library from https://github.com/dimafeng/testcontainers-scala
-9. Metrics and dashboards to measure "load". Grafana + Prometheus
+2. Possibly to improve the alghoritm to calculate prime numbers
+3. Rate limits on the "Proxy" to prevent possible "DDoS"
+4. To make clever caching in the "Calculator" not to lose all the data in case of restart. Any in memory database to have fast access to all the calculations.
+5. Improve the circuit breaker
+6. Add dockerisation and kubernetesation
+7. Add tracing. For example: Zipkin
+8. Add integration testing. For example with library from https://github.com/dimafeng/testcontainers-scala
+9. Add metrics and dashboards to measure "load". Grafana + Prometheus
 
 
 ##How to launch
