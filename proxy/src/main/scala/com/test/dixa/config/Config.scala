@@ -11,7 +11,7 @@ case class CircuitBreaker(retryTimes: Int, initialRetryDelay: FiniteDuration)
 
 case class GrpcEndpoint(host: String, port: Int)
 
-case class ServerConfig(host: String, port: Int)
+case class ServerConfig(host: String, port: Int, requestTimeout: FiniteDuration)
 
 case class Config(server: ServerConfig, grpcEndpoint: GrpcEndpoint, circuitBreaker: CircuitBreaker)
 

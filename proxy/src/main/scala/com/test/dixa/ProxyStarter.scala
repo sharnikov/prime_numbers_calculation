@@ -17,7 +17,7 @@ object ProxyStarter extends IOApp {
           config   <- Config.parseConfig[IO](resources.configBlocker)
           _        <- logger.info("Config is ready")
           services <- Services.build[IO](config)
-          http     <- Http.build[IO](services)
+          http     <- Http.build[IO](services, config)
           _        <- logger.info("Modules are built")
           _ <- BlazeServerBuilder[IO](resources.serverPool)
             .bindHttp(config.server.port, config.server.host)

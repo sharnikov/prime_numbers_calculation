@@ -3,10 +3,12 @@ package com.test.dixa.services
 import java.nio.charset.StandardCharsets
 
 import cats.effect.{ ContextShift, Sync }
+import cats.syntax.applicativeError._
 import cats.syntax.applicative._
 import cats.syntax.either._
 import cats.syntax.functor._
 import cats.syntax.semigroupk._
+import com.test.dixa.config.Config
 import org.http4s.HttpRoutes
 import io.chrisdavenport.log4cats.Logger
 import sttp.model.StatusCode
@@ -15,7 +17,6 @@ import sttp.tapir._
 import sttp.tapir.json.circe._
 import sttp.tapir.server.http4s._
 import fs2.{ Stream => FStream }
-
 import com.test.dixa.errors.Errors._
 
 class ApiRoutes[F[_]: Sync: ContextShift: Logger](
@@ -45,8 +46,6 @@ class ApiRoutes[F[_]: Sync: ContextShift: Logger](
       .in("health")
       .out(jsonBody[String])
       .out(statusCode(StatusCode.Ok))
-
-  import cats.implicits._
 
   private val getPrimeStreamRoute = getPrimeStreamEndpoint.toRoutes(inputNumber =>
     Sync[F].suspend {
