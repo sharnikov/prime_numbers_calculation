@@ -8,9 +8,13 @@ object Errors {
 
   import com.test.dixa.errors.ErrorsCodecs._
 
-  case class ExternalServerUnavailableException(message: String) extends Throwable
-  case class CalculationFailedException(message: String)         extends Throwable
-  case class InternalException(message: String)                  extends Throwable
+  trait AppException extends Throwable {
+    def message: String
+  }
+
+  case class ExternalServerUnavailableException(message: String) extends AppException
+  case class CalculationFailedException(message: String)         extends AppException
+  case class InternalException(message: String)                  extends AppException
 
   val defaultErrors = oneOf[Throwable](
     statusMapping(StatusCode.ServiceUnavailable, jsonBody[ExternalServerUnavailableException]),

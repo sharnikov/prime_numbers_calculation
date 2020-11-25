@@ -11,7 +11,7 @@ import io.grpc.{ Metadata, Status, StatusRuntimeException }
 import scala.concurrent.duration._
 
 object GrpcCalculatorService {
-  def build[F[_]: ConcurrentEffect: ContextShift: Logger: Timer, A](
+  def build[F[_]: ConcurrentEffect: ContextShift: Logger: Timer](
       config: Config,
       client: FStream[F, CalculatorFs2Grpc[F, Metadata]]
   ): F[GrpcCalculatorService[F]] =
@@ -32,7 +32,12 @@ class GrpcCalculatorService[F[_]: ConcurrentEffect: ContextShift: Logger: Timer]
     for {
       client <- streamClient
       request = Request(goalNumber)
-      result <- tryToRequest(client, request, config.circuitBreaker.retryTimes, config.circuitBreaker.initialRetryDelay)
+      result <- tryToRequest(
+        client,
+        request,
+        config.circuitBreaker.retryTimes - 1,
+        config.circuitBreaker.initialRetryDelay
+      )
     } yield result
 
   private def tryToRequest(

@@ -15,7 +15,7 @@ object Services {
   def build[F[_]: ConcurrentEffect: ContextShift: Logger: Timer](config: Config): F[Services[F]] =
     for {
       buildGrpcClient       <- buildGrpcClient[F](config)
-      rpcCalculationService <- GrpcCalculatorService.build[F, Metadata](config, buildGrpcClient)
+      rpcCalculationService <- GrpcCalculatorService.build[F](config, buildGrpcClient)
     } yield new Services[F](rpcCalculationService, buildGrpcClient)
 
   private def buildGrpcClient[F[_]: ConcurrentEffect](
