@@ -1,7 +1,7 @@
 package utils
 
 import cats.effect.IO
-import com.test.dixa.errors.Errors.{ AppException, CalculationFailedException, ExternalServerUnavailableException }
+import com.test.dixa.errors.Errors.AppException
 import fs2.{ Stream => FStream }
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.flatspec.AnyFlatSpec

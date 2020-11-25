@@ -12,8 +12,6 @@ import sttp.tapir.openapi.circe.yaml._
 import sttp.tapir.swagger.http4s.SwaggerHttp4s
 import io.chrisdavenport.log4cats.Logger
 
-import scala.concurrent.duration._
-
 object Http {
   def build[F[_]: ContextShift: Concurrent: Logger: Timer](services: Services[F], config: Config): F[Http[F]] =
     Sync[F].delay(new Http[F](services, config))

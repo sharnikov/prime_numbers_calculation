@@ -8,7 +8,6 @@ import cats.syntax.applicative._
 import cats.syntax.either._
 import cats.syntax.functor._
 import cats.syntax.semigroupk._
-import com.test.dixa.config.Config
 import org.http4s.HttpRoutes
 import io.chrisdavenport.log4cats.Logger
 import sttp.model.StatusCode

@@ -4,7 +4,6 @@ import cats.effect.{ ExitCode, IO, IOApp }
 import com.test.dixa.config.Config
 import com.test.dixa.modules.{ AppResources, Http, Services }
 import io.chrisdavenport.log4cats.slf4j.Slf4jLogger
-import io.grpc.Metadata
 import org.http4s.server.blaze.BlazeServerBuilder
 
 object ProxyStarter extends IOApp {

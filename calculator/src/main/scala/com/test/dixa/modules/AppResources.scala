@@ -1,11 +1,7 @@
 package com.test.dixa.modules
 
-import java.util.concurrent.{ ExecutorService, Executors }
-
-import cats.syntax.functor._
-import cats.syntax.applicative._
-import cats.syntax.apply._
 import cats.effect.{ Blocker, Resource, Sync }
+import java.util.concurrent.{ ExecutorService, Executors }
 
 import scala.concurrent.ExecutionContext
 
