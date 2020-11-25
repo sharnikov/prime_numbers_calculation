@@ -1,7 +1,6 @@
 package com.test.dixa.calculation
 
 import cats.effect.IO
-import io.chrisdavenport.log4cats.slf4j.Slf4jLogger
 import utils.TestUtils
 
 class BrutePrimeCalculatorSpec extends TestUtils {

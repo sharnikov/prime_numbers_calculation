@@ -1,20 +1,21 @@
 package com.test.dixa.services
 
-import cats.syntax.applicative._
-import cats.syntax.functor._
 import cats.effect.{ ConcurrentEffect, ContextShift, Sync, Timer }
 import com.test.dixa.config.Config
 import com.test.dixa.errors.Errors.{ CalculationFailedException, ExternalServerUnavailableException }
 import dixa.primes.{ CalculatorFs2Grpc, Request }
 import fs2.{ Chunk, Stream => FStream }
 import io.chrisdavenport.log4cats.Logger
-import io.grpc.{ ManagedChannelBuilder, Metadata, Status, StatusRuntimeException }
+import io.grpc.{ Metadata, Status, StatusRuntimeException }
 
 import scala.concurrent.duration._
 
 object GrpcCalculatorService {
-  def build[F[_]: ConcurrentEffect: ContextShift: Logger: Timer](config: Config): F[GrpcCalculatorService[F]] =
-    Sync[F].delay(new GrpcCalculatorService[F](config))
+  def build[F[_]: ConcurrentEffect: ContextShift: Logger: Timer, A](
+      config: Config,
+      client: FStream[F, CalculatorFs2Grpc[F, Metadata]]
+  ): F[GrpcCalculatorService[F]] =
+    Sync[F].delay(new GrpcCalculatorService[F](config, client))
 }
 
 trait CalculationService[F[_]] {
@@ -22,21 +23,10 @@ trait CalculationService[F[_]] {
   def getConvertedPrimeStream(goalNumber: Int): FStream[F, Byte]
 }
 
-class GrpcCalculatorService[F[_]: ConcurrentEffect: ContextShift: Logger: Timer] private (config: Config)
-    extends CalculationService[F] {
-
-  private val streamClient = {
-    import org.lyranthe.fs2_grpc.java_runtime.implicits._
-
-    val channel = ManagedChannelBuilder
-      .forAddress(config.grpcEndpoint.host, config.grpcEndpoint.port)
-      .usePlaintext()
-      .stream[F]
-
-    for {
-      managedChannel <- channel
-    } yield CalculatorFs2Grpc.stub(managedChannel)
-  }
+class GrpcCalculatorService[F[_]: ConcurrentEffect: ContextShift: Logger: Timer] private (
+    config: Config,
+    streamClient: FStream[F, CalculatorFs2Grpc[F, Metadata]]
+) extends CalculationService[F] {
 
   override def getPrimeStream(goalNumber: Int): FStream[F, Int] =
     for {
