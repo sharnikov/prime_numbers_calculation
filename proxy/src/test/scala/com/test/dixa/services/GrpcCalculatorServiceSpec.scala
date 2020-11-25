@@ -16,7 +16,7 @@ class GrpcCalculatorServiceSpec extends TestUtils with TestImplicits {
     server = ServerConfig(
       host = "host",
       port = 1,
-      requestTimeout = 10 seconds
+      requestTimeout = 10.seconds
     ),
     grpcEndpoint = GrpcEndpoint(
       host = "host",
@@ -24,7 +24,7 @@ class GrpcCalculatorServiceSpec extends TestUtils with TestImplicits {
     ),
     circuitBreaker = CircuitBreaker(
       retryTimes = 3,
-      initialRetryDelay = 1 seconds
+      initialRetryDelay = 1.seconds
     )
   )
 
