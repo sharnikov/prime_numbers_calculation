@@ -8,6 +8,7 @@ import dixa.primes.CalculatorFs2Grpc
 import io.grpc.netty.NettyServerBuilder
 import io.grpc.Metadata
 import io.chrisdavenport.log4cats.slf4j.Slf4jLogger
+import io.grpc.services.HealthStatusManager
 
 object CalculationStarter extends IOApp {
 
@@ -27,6 +28,7 @@ object CalculationStarter extends IOApp {
           _ <- NettyServerBuilder
             .forPort(config.server.port)
             .addService(bindCalculationService)
+            .addService(new HealthStatusManager().getHealthService)
             .stream[IO]
             .evalMap(server => IO(server.start()))
             .map(_.awaitTermination())

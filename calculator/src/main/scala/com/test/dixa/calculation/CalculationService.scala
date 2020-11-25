@@ -1,8 +1,7 @@
-package com.test.dixa
+package com.test.dixa.calculation
 
 import cats.effect.{ Concurrent, Sync, Timer }
 import dixa.primes.{ CalculatorFs2Grpc, Request, Response }
-import com.test.dixa.calculation.PrimeCalculator
 import com.test.dixa.config.Config
 import fs2.{ Stream => FStream }
 

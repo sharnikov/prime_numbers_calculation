@@ -65,8 +65,9 @@ object Dependencies extends DependencyBuilders with LibraryManagementSyntax {
     pureConfigLib("pureconfig-cats-effect")
   )
 
-  private val other = Seq(
-    "io.grpc" % "grpc-netty" % "1.33.1"
+  private val grpc = Seq(
+    "io.grpc" % "grpc-netty"    % "1.33.1",
+    "io.grpc" % "grpc-services" % "1.33.1"
   )
 
   private val test = Seq(
@@ -76,7 +77,7 @@ object Dependencies extends DependencyBuilders with LibraryManagementSyntax {
     "org.scalamock"  %% "scalamock"  % "4.4.0"  % Test
   )
 
-  val proxy = cats ++ tapir ++ http4s ++ other ++ log ++ test ++ fs2 ++ pureConfig
+  val proxy = cats ++ tapir ++ http4s ++ grpc ++ log ++ test ++ fs2 ++ pureConfig
 
-  val calculator = cats ++ other ++ log ++ test ++ fs2 ++ pureConfig
+  val calculator = cats ++ grpc ++ log ++ test ++ fs2 ++ pureConfig
 }
