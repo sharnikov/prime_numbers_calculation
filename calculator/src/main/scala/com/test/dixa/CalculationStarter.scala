@@ -19,7 +19,7 @@ object CalculationStarter extends IOApp {
         for {
           config   <- Config.parseConfig[IO](resources.configBlocker)
           _        <- logger.info("Config is ready")
-          services <- Services.build[IO, Metadata]()
+          services <- Services.build[IO, Metadata](config)
           bindCalculationService = CalculatorFs2Grpc.bindService(
             services.calculationService
           )
