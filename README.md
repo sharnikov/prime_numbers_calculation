@@ -29,16 +29,15 @@ Moreover, there is no any infrastructural stuff like database or a queue, so I d
 It has a lazy stream, and it saves the previous results. In case of a restart of the application we lose all the calculations, but to do a database to save the data on disk here is IMHO overkill.
 5. Unit tests were added to services to cover the most vulnerable parts of code.          
 
-##Points to improve
-1. Better swagger descriptions
-2. Possibly to improve the algorithm to calculate prime numbers
-3. Rate limits on the "Proxy" to prevent possible "DDoS"
-4. To make clever caching in the "Calculator" not to lose all the data in case of restart. Any in memory database to have fast access to all the calculations.
-5. Improve the circuit breaker
-6. Add dockerisation and kubernetesation
-7. Add tracing. For example: Zipkin
-8. Add integration testing. For example with library from https://github.com/dimafeng/testcontainers-scala
-9. Add metrics and dashboards to measure "load". Grafana + Prometheus
+##Points to improve 
+1. Possibly to improve the algorithm to calculate prime numbers
+2. Add Rate limits on the "Proxy" to prevent possible "DDoS"
+3. Make clever caching in the "Calculator" not to lose all the data in case of restart. Any in memory database to have fast access to all the calculations.
+4. Improve the circuit breaker
+5. Add dockerisation and kubernetesation
+6. Add tracing. For example: Zipkin
+7. Add integration testing. For example with library from https://github.com/dimafeng/testcontainers-scala
+8. Add metrics and dashboards to measure "load". Grafana + Prometheus
 
 
 ##How to launch
