@@ -20,10 +20,10 @@ Technologies:
 7. ScalaFmt and better-monadic-for are also a widespread stuff in apps written on scala
 
 ##Implementation remarks
-1. The first service does all the work with errors. Catches errors from the second service and rethrows its own if there will be any with a set of defined exceptions. The route has validation on the number(it should be >= 2).
+1. The first service does all the work with errors. Catches errors from the second service and rethrows its own if there will be any using a set of defined exceptions. The http route has validation on the number(it should be >= 2).
 2. Homemade circuit breaker was implemented as a recursive method without any extra libs. It just does several retries and doesn't include regular circuit breaker options like "Closed", "Open" and other statuses.
 It doesn't retry if the second app is down, because IMHO there is not too much sense. This part of the code could be approached more precisely, but the logic is clear. There are situations when it's better to do a retry and there are when it doesn't make too much sense.
-3. I added healthchecks to foresee both apps to dockerise it and kubernetise it and I wanted to write a docker compose, but I couldn't succeed from several attempts. So I decided to let it be as it is and leave apps without docker. 
+3. I added healthchecks to foresee both apps "possible" to be dockerised and kubernetised and I wanted to write a docker compose, but I couldn't succeed from several attempts. So I decided to let it be as it is and leave apps without docker. 
 Moreover, there is no any infrastructural stuff like database or a queue, so I decided to stop it there and to write README after all.
 4. The second app has a pretty simple prime calculation algorithm. From the beginning I wanted to write more optimal algorithm, but then decided the current one is enough(you can find the draw in commits history if you want). 
 It has a lazy stream, and it saves the previous results. In case of a restart of the application we lose all the calculations, but to do a database to save the data on disk here is IMHO overkill.
