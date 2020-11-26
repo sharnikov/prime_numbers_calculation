@@ -31,7 +31,7 @@ It has a lazy stream, and it saves the previous results. In case of a restart of
 
 ##Points to improve
 1. Better swagger descriptions
-2. Possibly to improve the alghoritm to calculate prime numbers
+2. Possibly to improve the algorithm to calculate prime numbers
 3. Rate limits on the "Proxy" to prevent possible "DDoS"
 4. To make clever caching in the "Calculator" not to lose all the data in case of restart. Any in memory database to have fast access to all the calculations.
 5. Improve the circuit breaker
